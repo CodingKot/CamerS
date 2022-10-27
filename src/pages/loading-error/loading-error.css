@@ -1,0 +1,8 @@
+.loading-error
+ {
+  display: flex;
+  justify-content: center;
+  color: red;
+  margin-top: 100px;
+  font-size: 18px;
+ }
