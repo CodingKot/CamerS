@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { useEffect, MouseEvent} from 'react';
 import { fetchReviews, fetchSimilars, fetchSelectedProduct } from '../../store/api-actions';
-import {Link, useParams} from 'react-router-dom';
+import {Link, useParams, useSearchParams} from 'react-router-dom';
 import CameraCard from '../camera_card/camera_card';
 import {getSelectedProduct, getSortedReviews, getSimilars} from '../../store/selectors';
 import Rating from '../rating/rating';
@@ -13,28 +13,25 @@ import { handleScrollToTop } from '../../utils/utils';
 import ReviewSendModal from './review-send-modal/review-send-modal';
 import SuccessModal from './success-modal/success-modal';
 import Breadcrumps from '../breadcrumps/breadcrumps';
+import { TAB_CONTROLS, TabControl, Query } from '../../const';
 
 
 function Product (): JSX.Element {
   const dispatch = useAppDispatch();
-  const params = useParams();
-  const selectedProduct = useAppSelector(getSelectedProduct(Number(params.id)));
+  const {id} = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = searchParams.get(Query.Tab);
+  const selectedProduct = useAppSelector(getSelectedProduct(Number(id)));
   const reviews = useAppSelector(getSortedReviews);
   const reviewsCount = reviews.length;
   const similars = useAppSelector(getSimilars);
-  const [isActiveProperties, setActiveProperties] = useState<boolean>(false);
-  const [isActiveDescription, setActiveDescription] = useState<boolean>(true);
-  const [reviewsRendered, setReviewsRendered] = useState<number>(REVIEWS_PER_STEP);
+  const [selectedTab, setSelectedTab] = useState(activeTab);
+  const [reviewsRendered, setReviewsRendered] = useState(REVIEWS_PER_STEP);
   const [activeSimilars, setActiveSimilars] = useState<number[]>(FIRST_ACTIVE_SIMILARS);
-  const [nextClickCounter, setNextClickCounter] = useState<number>(FIRST_ACTIVE_SIMILARS.length);
-  const [isReviewModalOpen, setReviewModalOpen] = useState<boolean>(false);
-  const [isSuccessModalopen, setSuccessModalOpen] = useState<boolean>(false);
+  const [nextClickCounter, setNextClickCounter] = useState(FIRST_ACTIVE_SIMILARS.length);
+  const [isReviewModalOpen, setReviewModalOpen] = useState(false);
+  const [isSuccessModalopen, setSuccessModalOpen] = useState(false);
 
-  const handleTabButtonClick = (evt: MouseEvent<HTMLButtonElement>) => {
-    evt.preventDefault();
-    setActiveProperties(!isActiveProperties);
-    setActiveDescription(!isActiveDescription);
-  };
 
   const handleShowMoreButtonClick = (evt: MouseEvent<HTMLButtonElement>) => {
     evt.preventDefault();
@@ -79,27 +76,27 @@ function Product (): JSX.Element {
 
   useEffect(() => {
     if(!selectedProduct?.id){
-      dispatch(fetchSelectedProduct(Number(params.id)));
+      dispatch(fetchSelectedProduct(Number(id)));
     }
-    dispatch(fetchReviews(Number(params.id)));
-    dispatch(fetchSimilars(Number(params.id)));
+    dispatch(fetchReviews(Number(id)));
+    dispatch(fetchSimilars(Number(id)));
     setReviewsRendered(REVIEWS_PER_STEP);
     setActiveSimilars(FIRST_ACTIVE_SIMILARS);
     setNextClickCounter(FIRST_ACTIVE_SIMILARS.length);
-  }, [selectedProduct?.id, params.id, dispatch]);
+  }, [selectedProduct?.id, id, dispatch]);
 
   return (
 
     <main>
-      <div className="page-content">
-        <Breadcrumps/>
+      <div className="page-content" >
+        <Breadcrumps title={selectedProduct?.name}/>
         <div className="page-content__section">
           <section className="product">
             <div className="container">
               <div className="product__img">
                 {selectedProduct &&
                 <picture>
-                  <source type="image/webp" srcSet={`${selectedProduct.previewImgWebp}, ${selectedProduct.previewImg2x} 2x`}/><img src={selectedProduct.previewImg} srcSet={`${selectedProduct.previewImg2x} 2x`} width="560" height="480" alt={selectedProduct.name}/>
+                  <source type="image/webp" srcSet={`/${selectedProduct.previewImgWebp}, /${selectedProduct.previewImg2x} 2x`}/><img src={`/${selectedProduct.previewImg}`} srcSet={`/${selectedProduct.previewImg2x} 2x`} width="560" height="480" alt={selectedProduct.name}/>
                 </picture>}
               </div>
               <div className="product__content">
@@ -113,18 +110,21 @@ function Product (): JSX.Element {
                 </button>
                 <div className="tabs product__tabs">
                   <div className="tabs__controls product__tabs-controls">
-                    <button className={classnames('tabs__control', {'is-active': isActiveProperties})} type="button"
-                      onClick={handleTabButtonClick}
-                    >
-                    Характеристики
-                    </button>
-                    <button className={classnames('tabs__control', {'is-active': isActiveDescription})} type="button"
-                      onClick={handleTabButtonClick}
-                    >Описание
-                    </button>
+                    {TAB_CONTROLS.map((control) => (
+                      <button key={control.value} className={classnames('tabs__control', {'is-active': control.value === selectedTab})} type="button"
+                        onClick={(evt) => {
+                          evt.preventDefault();
+                          setSearchParams(`?${Query.Tab}=${control.value}`);
+                          setSelectedTab(control.value);
+                        }}
+                      >
+                        {control.label}
+                      </button>
+                    ))}
                   </div>
                   <div className="tabs__content">
-                    <div className={classnames('tabs__element', {'is-active': isActiveProperties})}>
+                    {selectedTab === TabControl.Features &&
+                    <div className="tabs__element is-active">
                       <ul className="product__tabs-list">
                         <li className="item-list"><span className="item-list__title">Артикул:</span>
                           <p className="item-list__text"> {selectedProduct?.vendorCode}</p>
@@ -139,12 +139,13 @@ function Product (): JSX.Element {
                           <p className="item-list__text">{selectedProduct?.level}</p>
                         </li>
                       </ul>
-                    </div>
-                    <div className={classnames('tabs__element', {'is-active': isActiveDescription})}>
+                    </div>}
+                    {selectedTab === TabControl.Description &&
+                    <div className="tabs__element is-active">
                       <div className="product__tabs-text">
                         <p>{selectedProduct?.description}</p>
                       </div>
-                    </div>
+                    </div>}
                   </div>
                 </div>
               </div>
@@ -191,7 +192,7 @@ function Product (): JSX.Element {
             <div className="container">
               <div className="page-content__headed">
                 <h2 className="title title--h3">Отзывы</h2>
-                <button className="btn" type="button" onClick={handleSendReviewOpen}>Оставить свой отзыв</button>
+                <button className="btn" type="button" onClick={handleSendReviewOpen} data-testid="leave-review">Оставить свой отзыв</button>
               </div>
               <ul className="review-block__list">
                 {renderReviews}
@@ -212,9 +213,8 @@ function Product (): JSX.Element {
         </svg>
       </Link>
       {isReviewModalOpen && <ReviewSendModal onCloseClick={handleSendReviewClose} onSuccess={handleSuccessModalOpen} cameraId={selectedProduct?.id}/>}
-      {isSuccessModalopen && <SuccessModal cameraId={selectedProduct?.id} onCloseClick={handleSuccessModalClose}/>}
+      {isSuccessModalopen && <SuccessModal cameraId={selectedProduct?.id} onCloseClick={handleSuccessModalClose} activeTab={activeTab}/>}
     </main>
-
   );
 }
 

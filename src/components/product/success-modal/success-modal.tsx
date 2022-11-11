@@ -1,5 +1,5 @@
 import { Link, generatePath } from 'react-router-dom';
-import {AppRoute} from '../../../const';
+import {AppRoute, Query} from '../../../const';
 import {fetchReviews, fetchSelectedProduct} from '../../../store/api-actions';
 import {useAppDispatch} from '../../../hooks/index';
 import useModal from '../../../hooks/useModal';
@@ -9,9 +9,10 @@ import FocusLock from 'react-focus-lock';
 type SuccessModalProps = {
   cameraId?: number;
   onCloseClick: () => void;
+  activeTab: string | null;
 }
 
-function SuccessModal ({cameraId, onCloseClick}: SuccessModalProps): JSX.Element {
+function SuccessModal ({cameraId, onCloseClick, activeTab}: SuccessModalProps): JSX.Element {
 
   const dispatch = useAppDispatch();
 
@@ -38,7 +39,7 @@ function SuccessModal ({cameraId, onCloseClick}: SuccessModalProps): JSX.Element
             </svg>
             <div className="modal__buttons">
               {cameraId &&
-            <Link className="btn btn--purple modal__btn modal__btn--fit-width" type="button" onClick={handleCloseSuccessModal} to={generatePath(AppRoute.Product, {id: `${cameraId}`})}>Вернуться к покупкам
+            <Link className="btn btn--purple modal__btn modal__btn--fit-width" type="button" onClick={handleCloseSuccessModal} to={{pathname: generatePath(AppRoute.Product, {id: `${cameraId}`}), search: `?${Query.Tab}=${activeTab ?? ''}`}}>Вернуться к покупкам
             </Link>}
             </div>
             <button className="cross-btn" type="button" aria-label="Закрыть попап" onClick={onCloseClick}>

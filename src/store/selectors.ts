@@ -7,7 +7,6 @@ export const getCameras = (state: State) => state[NameSpase.Cameras].cameras;
 export const getIsDataLoading = (state: State) => state[NameSpase.Cameras].isDataLoading;
 export const getLoadingStatus = (state: State) => state[NameSpase.Cameras].loadingStatus;
 export const getPromo = (state: State) => state[NameSpase.Promo].promoCamera;
-export const getIsPromoLoading = (state: State) => state[NameSpase.Promo].isPromoLoading;
 const getReviews = (state: State) => state[NameSpase.Product].reviews;
 
 export const getSortedReviews = createSelector (

@@ -14,14 +14,8 @@ export const promoProcess = createSlice({
   reducers: {},
   extraReducers (builder) {
     builder
-      .addCase(fetchPromo.pending, (state) => {
-        state.isPromoLoading = true;
-      })
       .addCase(fetchPromo.fulfilled, (state, action) => {
         state.promoCamera = action.payload;
-        state.isPromoLoading = false;
-      })
-      .addCase(fetchPromo.rejected, (state) => {
         state.isPromoLoading = false;
       });
   }

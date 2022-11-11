@@ -2,8 +2,8 @@ import Logo from '../logo/logo';
 import { NAVIGATION_ITEMS } from '../../const';
 import {Link} from 'react-router-dom';
 
-
 function Header (): JSX.Element {
+
 
   return (
     <header className="header" id="header">

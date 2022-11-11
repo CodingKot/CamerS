@@ -2,13 +2,21 @@ import { getPromo } from '../../store/selectors';
 import Banner from '../banner/banner';
 import CatalogAside from './catalog-aside/catalog-aside';
 import Breadcrumps from '../breadcrumps/breadcrumps';
-import { useAppSelector } from '../../hooks/index';
-import CatalogPage from './catalog-page/catalog-page';
+import { useAppSelector, useAppDispatch } from '../../hooks/index';
+import CatalogContent from './catalog-content/catalog-content';
+import { fetchPromo } from '../../store/api-actions';
+import { useEffect } from 'react';
 
 
 function Catalog (): JSX.Element {
 
+  const dispatch = useAppDispatch();
+
   const banner = useAppSelector(getPromo);
+
+  useEffect(() => {
+    dispatch(fetchPromo());
+  }, [dispatch]);
 
   return (
     <main>
@@ -20,7 +28,7 @@ function Catalog (): JSX.Element {
             <h1 className="title title--h2">Каталог фото- и видеотехники</h1>
             <div className="page-content__columns">
               <CatalogAside/>
-              <CatalogPage/>
+              <CatalogContent/>
             </div>
           </div>
         </section>

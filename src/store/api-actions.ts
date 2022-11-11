@@ -3,19 +3,19 @@ import {createAsyncThunk} from '@reduxjs/toolkit';
 import { AppDispatch, State } from '../types/state';
 import { Cameras, Camera } from '../types/camera';
 import { Promo } from '../types/promo';
-import { ApiRoute, AppRoute } from '../const';
+import { ApiRoute, AppRoute, CAMERAS_PER_PAGE } from '../const';
 import { Reviews } from '../types/review';
 import { redirectToRoute } from './action';
 import { ReviewPost } from '../types/review-post';
 
-export const fetchCameras = createAsyncThunk<Cameras, undefined,{
+export const fetchCameras = createAsyncThunk<Cameras, number,{
   dispatch: AppDispatch;
   state: State;
   extra: AxiosInstance;
 }>(
   'cameras/fetchCameras',
-  async(_, {dispatch, extra: api}) => {
-    const {data} = await (api.get<Cameras>(ApiRoute.Cameras));
+  async(startIndex, {dispatch, extra: api}) => {
+    const {data} = await (api.get<Cameras>(`${ApiRoute.Cameras}?_start=${startIndex}&_end=${startIndex + CAMERAS_PER_PAGE}`));
     return data;
   }
 );

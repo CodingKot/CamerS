@@ -13,7 +13,7 @@ function NotFound (): JSX.Element {
         <Link to="/" style={{
           color: 'red',
         }}
-        >Веруться на главную
+        >Вернуться на главную
         </Link>
       </section>
     </div>

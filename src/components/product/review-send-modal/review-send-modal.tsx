@@ -109,7 +109,7 @@ function ReviewSendModal({onCloseClick, onSuccess, cameraId}: ReviewSendModalPro
                         </svg>
 
                       </span>
-                      <input type="text" name="user-name" placeholder="Введите ваше имя" value={userName} onChange={handleUserNameChange}/>
+                      <input type="text" name="user-name" placeholder="Введите ваше имя" value={userName} onChange={handleUserNameChange} data-testid="name"/>
                     </label>
                     <p className="custom-input__error">Нужно указать имя</p>
                   </div>
@@ -120,7 +120,7 @@ function ReviewSendModal({onCloseClick, onSuccess, cameraId}: ReviewSendModalPro
                           <use xlinkHref="#icon-snowflake"></use>
                         </svg>
                       </span>
-                      <input type="text" name="user-plus" placeholder="Основные преимущества товара" value={advantage} onChange={handleAdvantageChange}/>
+                      <input type="text" name="user-plus" placeholder="Основные преимущества товара" value={advantage} onChange={handleAdvantageChange} data-testid="advantage"/>
                     </label>
                     <p className="custom-input__error">Нужно указать достоинства</p>
                   </div>
@@ -131,7 +131,7 @@ function ReviewSendModal({onCloseClick, onSuccess, cameraId}: ReviewSendModalPro
                           <use xlinkHref="#icon-snowflake"></use>
                         </svg>
                       </span>
-                      <input type="text" name="user-minus" placeholder="Главные недостатки товара" value={disadvantage} onChange={handleDisadvantageChange}/>
+                      <input type="text" name="user-minus" placeholder="Главные недостатки товара" value={disadvantage} onChange={handleDisadvantageChange} data-testid="disadvantage"/>
                     </label>
                     <p className="custom-input__error">Нужно указать недостатки</p>
                   </div>
@@ -142,7 +142,7 @@ function ReviewSendModal({onCloseClick, onSuccess, cameraId}: ReviewSendModalPro
                           <use xlinkHref="#icon-snowflake"></use>
                         </svg>
                       </span>
-                      <textarea name="user-comment" minLength={5} placeholder="Поделитесь своим опытом покупки" value={review} onChange={handleReviewChange}></textarea>
+                      <textarea name="user-comment" minLength={5} placeholder="Поделитесь своим опытом покупки" value={review} onChange={handleReviewChange} data-testid="review"></textarea>
                     </label>
                     <div className="custom-textarea__error">Нужно добавить комментарий</div>
                   </div>
