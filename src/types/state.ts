@@ -16,7 +16,7 @@ export type PromoProcess = {
 }
 
 export type ProductProcess = {
-  isProductLoading: boolean;
+
   reviews: Reviews;
   similars: Cameras;
 }

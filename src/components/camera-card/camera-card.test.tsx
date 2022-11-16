@@ -1,7 +1,7 @@
 import {render, screen} from '@testing-library/react';
 import {createMemoryHistory} from 'history';
-import HistoryRouter from '../history-route/history-route';
-import CameraCard from './camera_card';
+import HistoryRouter from '../history-router/history-router';
+import CameraCard from './camera-card';
 import {makeFakeCamera} from '../../utils/mocks';
 
 describe('Component: CameraCard', () => {

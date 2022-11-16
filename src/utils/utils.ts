@@ -1,6 +1,6 @@
 import { Review } from '../types/review';
 import { Cameras, Camera } from '../types/camera';
-import { BreadcrumpsValue, BreadcrumsLabel, BreadcrumpsPath } from '../const';
+import { BreadcrumbsValue, BreadcrumbsLabel, BreadcrumbsPath } from '../const';
 
 export const compareDates = (reviewA: Review, reviewB: Review) => Date.parse(reviewB.createAt) - Date.parse(reviewA.createAt);
 
@@ -23,23 +23,23 @@ export const updateItem = (items: Cameras, newItem: Camera) => {
   return items;
 };
 
-export const changeBreadcrumps = (crump: string, title?:string) => {
-  switch (crump) {
-    case BreadcrumpsValue.Main:
-      return BreadcrumsLabel.Main;
-    case BreadcrumpsValue.Catalog:
-      return BreadcrumsLabel.Catalog;
+export const changeBreadcrumbs = (crumb: string, title?:string) => {
+  switch (crumb) {
+    case BreadcrumbsValue.Main:
+      return BreadcrumbsLabel.Main;
+    case BreadcrumbsValue.Catalog:
+      return BreadcrumbsLabel.Catalog;
     default:
       return title;
   }
 };
 
-export const getBreadcrumpsPath = (crump: string) => {
-  switch (crump) {
-    case BreadcrumpsValue.Main:
-      return BreadcrumpsPath.Main;
-    case BreadcrumpsValue.Catalog:
-      return BreadcrumpsPath.Catalog;
+export const getBreadcrumbsPath = (crumb: string) => {
+  switch (crumb) {
+    case BreadcrumbsValue.Main:
+      return BreadcrumbsPath.Main;
+    case BreadcrumbsValue.Catalog:
+      return BreadcrumbsPath.Catalog;
     default:
       return 'Path not found';
   }

@@ -1,11 +1,11 @@
-import Breadcrumps from '../breadcrumps/breadcrumps';
+import Breadcrumbs from '../breadcrumbs/breadcrumbs';
 
 function Home (): JSX.Element {
 
   return (
     <>
-      <Breadcrumps/>
-      <section className="catalog">
+      <Breadcrumbs/>
+      <section className="catalog" data-testid="home">
         <div className="container">
           <p style={{
             height:'400px',

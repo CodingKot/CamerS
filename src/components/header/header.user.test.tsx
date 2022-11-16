@@ -1,27 +1,14 @@
 import {render, screen} from '@testing-library/react';
 import {createMemoryHistory} from 'history';
-import HistoryRouter from '../history-route/history-route';
-import Footer from './footer';
+import HistoryRouter from '../history-router/history-router';
+import Header from './header';
 import { Route, Routes } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
-import { AppRoute } from '../../const';
+import { AppRoute} from '../../const';
 
 const history = createMemoryHistory();
 
 describe('Component: Footer', () => {
-  it('should render correctly', () => {
-    render(
-      <HistoryRouter history={history}>
-        <Footer/>
-      </HistoryRouter>
-    );
-
-    expect(screen.getByText(/Интернет-магазин фото- и видеотехники/i)).toBeInTheDocument();
-    expect(screen.getByText(/Навигация/i)).toBeInTheDocument();
-    expect(screen.getByText(/Ресурсы/i)).toBeInTheDocument();
-    expect(screen.getByText(/Поддержка/i)).toBeInTheDocument();
-    expect(screen.getByTestId('logo')).toBeInTheDocument();
-  });
 
   it('should redirect to catalog when user clikes to link', async () => {
     history.push('/fake');
@@ -35,7 +22,7 @@ describe('Component: Footer', () => {
           />
           <Route
             path='*'
-            element={<Footer/>}
+            element={<Header/>}
           />
         </Routes>
       </HistoryRouter>

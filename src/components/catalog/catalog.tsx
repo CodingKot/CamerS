@@ -1,7 +1,7 @@
 import { getPromo } from '../../store/selectors';
 import Banner from '../banner/banner';
 import CatalogAside from './catalog-aside/catalog-aside';
-import Breadcrumps from '../breadcrumps/breadcrumps';
+import Breadcrumbs from '../breadcrumbs/breadcrumbs';
 import { useAppSelector, useAppDispatch } from '../../hooks/index';
 import CatalogContent from './catalog-content/catalog-content';
 import { fetchPromo } from '../../store/api-actions';
@@ -22,7 +22,7 @@ function Catalog (): JSX.Element {
     <main>
       {banner && <Banner banner={banner}/>}
       <div className="page-content">
-        <Breadcrumps/>
+        <Breadcrumbs/>
         <section className="catalog">
           <div className="container">
             <h1 className="title title--h2">Каталог фото- и видеотехники</h1>

@@ -74,8 +74,6 @@ export enum Query {
 
 export const STARS_COUNT = 5;
 
-export const PAGE_NUMBER_PARAMETER = 'page';
-
 export const TAB_CONTROLS = [
   {value: TabControl.Features, label: 'Характеристики'},
   {value: TabControl.Description, label: 'Описание'}
@@ -148,17 +146,17 @@ export const RATING_MARKS = [
   }
 ];
 
-export const BreadcrumpsValue = {
+export const BreadcrumbsValue = {
   Main: 'home',
   Catalog: 'catalog',
 };
 
-export const BreadcrumsLabel = {
+export const BreadcrumbsLabel = {
   Main: 'Главная',
   Catalog: 'Каталог',
 };
 
-export const BreadcrumpsPath = {
+export const BreadcrumbsPath = {
   Main: '/',
   Catalog: {pathname: AppRoute.Catalog, search: `?${Query.PageNumber}=1`},
 };

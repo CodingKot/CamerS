@@ -1,4 +1,4 @@
-import CameraCard from '../../camera_card/camera_card';
+import CameraCard from '../../camera-card/camera-card';
 import { Link, useSearchParams} from 'react-router-dom';
 import { getIsDataLoading } from '../../../store/selectors';
 import { getCameras } from '../../../store/selectors';
@@ -26,7 +26,7 @@ function CatalogContent ():JSX.Element {
   }, [dispatch, offset]);
 
   return (
-    <div className="catalog__content">
+    <div className="catalog__content" data-testid="content">
       <div className="catalog-sort">
         <form action="#">
           <div className="catalog-sort__inner">

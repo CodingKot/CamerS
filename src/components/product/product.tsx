@@ -2,7 +2,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks';
 import { useEffect, MouseEvent} from 'react';
 import { fetchReviews, fetchSimilars, fetchSelectedProduct } from '../../store/api-actions';
 import {Link, useParams, useSearchParams} from 'react-router-dom';
-import CameraCard from '../camera_card/camera_card';
+import CameraCard from '../camera-card/camera-card';
 import {getSelectedProduct, getSortedReviews, getSimilars} from '../../store/selectors';
 import Rating from '../rating/rating';
 import ReviewCard from '../review-card/review-card';
@@ -12,7 +12,7 @@ import { REVIEWS_PER_STEP, FIRST_ACTIVE_SIMILARS } from '../../const';
 import { handleScrollToTop } from '../../utils/utils';
 import ReviewSendModal from './review-send-modal/review-send-modal';
 import SuccessModal from './success-modal/success-modal';
-import Breadcrumps from '../breadcrumps/breadcrumps';
+import Breadcrumbs from '../breadcrumbs/breadcrumbs';
 import { TAB_CONTROLS, TabControl, Query } from '../../const';
 
 
@@ -30,7 +30,7 @@ function Product (): JSX.Element {
   const [activeSimilars, setActiveSimilars] = useState<number[]>(FIRST_ACTIVE_SIMILARS);
   const [nextClickCounter, setNextClickCounter] = useState(FIRST_ACTIVE_SIMILARS.length);
   const [isReviewModalOpen, setReviewModalOpen] = useState(false);
-  const [isSuccessModalopen, setSuccessModalOpen] = useState(false);
+  const [isSuccessModalOpen, setSuccessModalOpen] = useState(false);
 
 
   const handleShowMoreButtonClick = (evt: MouseEvent<HTMLButtonElement>) => {
@@ -89,7 +89,7 @@ function Product (): JSX.Element {
 
     <main>
       <div className="page-content" >
-        <Breadcrumps title={selectedProduct?.name}/>
+        <Breadcrumbs title={selectedProduct?.name}/>
         <div className="page-content__section">
           <section className="product">
             <div className="container">
@@ -213,7 +213,7 @@ function Product (): JSX.Element {
         </svg>
       </Link>
       {isReviewModalOpen && <ReviewSendModal onCloseClick={handleSendReviewClose} onSuccess={handleSuccessModalOpen} cameraId={selectedProduct?.id}/>}
-      {isSuccessModalopen && <SuccessModal cameraId={selectedProduct?.id} onCloseClick={handleSuccessModalClose} activeTab={activeTab}/>}
+      {isSuccessModalOpen && <SuccessModal cameraId={selectedProduct?.id} onCloseClick={handleSuccessModalClose} activeTab={activeTab}/>}
     </main>
   );
 }

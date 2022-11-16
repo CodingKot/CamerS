@@ -1,6 +1,6 @@
 function CatalogAside () : JSX.Element {
   return (
-    <div className="catalog__aside">
+    <div className="catalog__aside" data-testid="aside">
       <div className="catalog-filter">
         <form action="#">
           <h2 className="visually-hidden">Фильтр</h2>

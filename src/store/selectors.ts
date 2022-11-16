@@ -19,7 +19,7 @@ export const getSortedReviews = createSelector (
 );
 
 export const getSimilars = (state: State) => state[NameSpase.Product].similars;
-export const getIsProductLoading = (state: State) => state[NameSpase.Product].isProductLoading;
+
 export const getSelectedProduct = (id: number) => (state: State) => state[NameSpase.Cameras].cameras.find((camera) => camera.id === id);
 
 

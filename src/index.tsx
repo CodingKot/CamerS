@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './components/app/app';
 import { store } from './store';
 import { Provider } from 'react-redux';
-import HistoryRouter from './components/history-route/history-route';
+import HistoryRouter from './components/history-router/history-router';
 import browserHistory from './browser-history';
 
 
