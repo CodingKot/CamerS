@@ -1604,7 +1604,7 @@ button,
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  visibility: hidden;
+  /* visibility: hidden; */
   opacity: 0;
   -webkit-transition: opacity 0.3s ease;
   -o-transition: opacity 0.3s ease;
@@ -1665,11 +1665,13 @@ button,
   -webkit-transition: color 0.3s ease;
   -o-transition: color 0.3s ease;
   transition: color 0.3s ease;
+
 }
 
 .form-search__reset svg {
   width: 10px;
   height: 10px;
+
 }
 
 .form-search.list-opened form label {
@@ -2039,7 +2041,7 @@ button,
   background-color: #dddddd;
 }
 
-.catalog-sort__btn-text input[type="radio"]:focus + label {
+.catalog-sort__btn-text input[type="radio"]:hover + label {
   color: #7575e2;
   background-color: #e8e8fa;
 }
@@ -2116,7 +2118,7 @@ button,
   pointer-events: none;
 }
 
-.catalog-sort__btn input[type="radio"]:focus + label {
+.catalog-sort__btn input[type="radio"]:hover + label {
   color: #7575e2;
   background-color: #e8e8fa;
 }
@@ -3583,9 +3585,12 @@ button,
     border-color: #525288;
   }
 
-  .form-search__reset:hover,
-  .form-search__reset:focus {
+  .form-search__reset:hover {
     color: #ed6041;
+  }
+
+  .form-search__reset:hover {
+    display: flex;
   }
 
   .breadcrumbs__link--active:hover,

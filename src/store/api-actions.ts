@@ -3,22 +3,114 @@ import {createAsyncThunk} from '@reduxjs/toolkit';
 import { AppDispatch, State } from '../types/state';
 import { Cameras, Camera } from '../types/camera';
 import { Promo } from '../types/promo';
-import { ApiRoute, AppRoute, CAMERAS_PER_PAGE } from '../const';
+import { ApiRoute, AppRoute, GetParameter, SortParameter, OrderParameter } from '../const';
 import { Reviews } from '../types/review';
 import { redirectToRoute } from './action';
 import { ReviewPost } from '../types/review-post';
+import { QueryParams } from '../types/query-params';
 
-export const fetchCameras = createAsyncThunk<Cameras, number,{
+
+export const fetchCameras = createAsyncThunk<Cameras, QueryParams, {
   dispatch: AppDispatch;
   state: State;
   extra: AxiosInstance;
 }>(
   'cameras/fetchCameras',
-  async(startIndex, {dispatch, extra: api}) => {
-    const {data} = await (api.get<Cameras>(`${ApiRoute.Cameras}?_start=${startIndex}&_end=${startIndex + CAMERAS_PER_PAGE}`));
+  async({sortType, order, minPrice, maxPrice, category, type, level}, {dispatch, extra: api}) => {
+
+    const params = {
+      [GetParameter.Sort]: sortType,
+      [GetParameter.Order]: order,
+      [GetParameter.PriceMin]: minPrice,
+      [GetParameter.PriceMax]: maxPrice,
+      [GetParameter.Category]: category,
+      [GetParameter.Type]: type,
+      [GetParameter.Level]: level,
+    };
+
+    const {data} = await (api.get<Cameras>(ApiRoute.Cameras, {params}));
+    if(data.length === 0) {
+      dispatch(redirectToRoute(AppRoute.CatalogEmpty));
+    }
     return data;
   }
 );
+
+export const fetchSearchedCameras = createAsyncThunk<Cameras, string, {
+  dispatch: AppDispatch;
+  state: State;
+  extra: AxiosInstance;
+}>(
+  'cameras/fetchSearchedCameras',
+  async(searchValue, {dispatch, extra: api}) => {
+    if(searchValue === '') {
+      return [];
+    }
+    const params = {
+      [GetParameter.Like]: searchValue,
+    };
+
+    const {data} = await (api.get<Cameras>(ApiRoute.Cameras, {params}));
+    return data;
+  }
+);
+
+export const fetchMinPrice = createAsyncThunk<string, undefined | number, {
+  dispatch: AppDispatch;
+  state: State;
+  extra: AxiosInstance;
+}>(
+  'cameras/fetchMinPrice',
+  async(price, {dispatch, extra: api}) => {
+
+    if(price) {
+      if(price) {
+        const params = {
+          [GetParameter.PriceMax]: price,
+          [GetParameter.Sort]: SortParameter.Price,
+          [GetParameter.Order]: OrderParameter.Up,
+        };
+
+        const {data} = await (api.get<Cameras>(ApiRoute.Cameras, {params}));
+        return data[data.length - 1].price.toString();
+      }
+    }
+    const params = {
+      [GetParameter.PriceMin]: price,
+      [GetParameter.Sort]: SortParameter.Price,
+      [GetParameter.Order]: OrderParameter.Up,
+    };
+    const {data} = await (api.get<Cameras>(ApiRoute.Cameras, {params}));
+    return data[0].price.toString();
+  }
+);
+
+export const fetchMaxPrice = createAsyncThunk<string, undefined | number, {
+  dispatch: AppDispatch;
+  state: State;
+  extra: AxiosInstance;
+}>(
+  'cameras/fetchMaxPrice',
+  async(price, {dispatch, extra: api}) => {
+
+    if(price) {
+      const params = {
+        [GetParameter.PriceMin]: price,
+        [GetParameter.Sort]: SortParameter.Price,
+        [GetParameter.Order]: OrderParameter.Up,
+      };
+      const {data} = await (api.get<Cameras>(ApiRoute.Cameras, {params}));
+      return data[0].price.toString();
+    }
+    const params = {
+      [GetParameter.Sort]: SortParameter.Price,
+      [GetParameter.Order]: OrderParameter.Up,
+    };
+    const {data} = await (api.get<Cameras>(ApiRoute.Cameras, {params}));
+    return data[data.length - 1].price.toString();
+  }
+);
+
 
 export const fetchPromo = createAsyncThunk<Promo, undefined, {
   dispatch: AppDispatch;

@@ -8,6 +8,7 @@ import { useAppSelector } from '../../hooks';
 import NotFound from '../../pages/not-found/not-found';
 import LoadingError from '../../pages/loading-error/loading-error';
 import Layout from '../../pages/layout/layout';
+import CatalogEmpty from '../catalog/catalog-empty/catalog-empty';
 
 function App(): JSX.Element {
 
@@ -26,6 +27,7 @@ function App(): JSX.Element {
       <Route path={AppRoute.Home} element={<Layout/>}>
         <Route index element = {<Home/>}/>
         <Route path={AppRoute.Catalog} element={<Catalog/>}/>
+        <Route path={AppRoute.CatalogEmpty} element={<CatalogEmpty/>}/>
         <Route path={AppRoute.Product} element={<Product/>}/>
       </Route>
       <Route

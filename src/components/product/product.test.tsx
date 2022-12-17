@@ -38,6 +38,5 @@ describe('Component: Product', () => {
     expect(screen.queryByText(/Оставить отзыв/i)).not.toBeInTheDocument();
     await userEvent.click(screen.getByTestId('leave-review'));
     expect(screen.getByText(/Оставить отзыв/i)).toBeInTheDocument();
-
   });
 });

@@ -1,29 +1,26 @@
 import CameraCard from '../../camera-card/camera-card';
-import { Link, useSearchParams} from 'react-router-dom';
-import { getIsDataLoading } from '../../../store/selectors';
-import { getCameras } from '../../../store/selectors';
-import { useAppSelector, useAppDispatch } from '../../../hooks/index';
-import { BACK, FORWARD, PAGES_NUMBER, AppRoute, CAMERAS_PER_PAGE, PAGES_START, Query} from '../../../const';
+import { Link} from 'react-router-dom';
+import { BACK, FORWARD, AppRoute, PAGES_START, SORTING_BUTTONS, ORDER_BUTTONS} from '../../../const';
 import classNames from 'classnames';
-import { fetchCameras } from '../../../store/api-actions';
-import {useEffect} from 'react';
 import Loading from '../../loading/loading';
 import { handleScrollToTop } from '../../../utils/utils';
+import { Camera } from '../../../types/camera';
+import { getPagesNumber } from '../../../store/selectors';
+import { useAppSelector } from '../../../hooks';
 
+type CatalogContentProps = {
+  handleSortingSearchParams: (sortingType: string) => void;
+  handleOrderSearchParams: (orderType: string) => void;
+  generateQueryParams: (page: number) => string;
+  sortingType: string | null;
+  orderType: string | null;
+  currentPage: number;
+  cameras: Camera[];
+  isDataLoading: boolean;
+}
 
-function CatalogContent ():JSX.Element {
-
-  const dispatch = useAppDispatch();
-  const [searchParams] = useSearchParams();
-  const currentPage = Number(searchParams.get(Query.PageNumber));
-  const offset = (currentPage - 1) * CAMERAS_PER_PAGE;
-  const cameras = useAppSelector(getCameras);
-  const isDataLoading = useAppSelector(getIsDataLoading);
-
-  useEffect(() => {
-
-    dispatch(fetchCameras(offset));
-  }, [dispatch, offset]);
+function CatalogContent ({handleSortingSearchParams, handleOrderSearchParams, generateQueryParams, sortingType, orderType, cameras, isDataLoading, currentPage}: CatalogContentProps):JSX.Element {
+  const pagesNumber = useAppSelector(getPagesNumber);
 
   return (
     <div className="catalog__content" data-testid="content">
@@ -32,32 +29,33 @@ function CatalogContent ():JSX.Element {
           <div className="catalog-sort__inner">
             <p className="title title--h5">Сортировать:</p>
             <div className="catalog-sort__type">
-              <div className="catalog-sort__btn-text">
-                <input type="radio" id="sortPrice" name="sort"/>
-                <label htmlFor="sortPrice">по цене</label>
-              </div>
-              <div className="catalog-sort__btn-text">
-                <input type="radio" id="sortPopular" name="sort"/>
-                <label htmlFor="sortPopular">по популярности</label>
-              </div>
+              {SORTING_BUTTONS.map((button) => (
+                <div className="catalog-sort__btn-text" key={button.value}>
+                  <input type="radio" id={button.value} name="sort" value={button.sortParameter} checked={sortingType === button.sortParameter}
+                    onChange={() => {
+                      handleSortingSearchParams(button.sortParameter);
+                    }}
+                  />
+                  <label htmlFor={button.value}>{button.label}</label>
+                </div>
+              ))}
             </div>
             <div className="catalog-sort__order">
-              <div className="catalog-sort__btn catalog-sort__btn--up">
-                <input type="radio" id="up" name="sort-icon" aria-label="По возрастанию"/>
-                <label htmlFor="up">
-                  <svg width="16" height="14" aria-hidden="true">
-                    <use xlinkHref="#icon-sort"></use>
-                  </svg>
-                </label>
-              </div>
-              <div className="catalog-sort__btn catalog-sort__btn--down">
-                <input type="radio" id="down" name="sort-icon" aria-label="По убыванию"/>
-                <label htmlFor="down">
-                  <svg width="16" height="14" aria-hidden="true">
-                    <use xlinkHref="#icon-sort"></use>
-                  </svg>
-                </label>
-              </div>
+              {ORDER_BUTTONS.map((button) => (
+                <div className={`catalog-sort__btn ${button.className}`} key={button.value}>
+                  <input type="radio" id={button.value} name="sort-icon" aria-label={button.label}
+                    checked={orderType === button.orderParameter}
+                    onChange={() => {
+                      handleOrderSearchParams(button.orderParameter);
+                    }}
+                  />
+                  <label htmlFor={button.value}>
+                    <svg width="16" height="14" aria-hidden="true">
+                      <use xlinkHref="#icon-sort"></use>
+                    </svg>
+                  </label>
+                </div>
+              ))}
             </div>
           </div>
         </form>
@@ -69,23 +67,41 @@ function CatalogContent ():JSX.Element {
             <CameraCard key={`camera-${camera.id}`} camera={camera}/>
           ))}
         </div>}
+      {pagesNumber !== 0
+      &&
       <div className="pagination" data-testid="pagination">
         <ul className="pagination__list">
-          <li className="pagination__item"><Link className={classNames('pagination__link', 'pagination__link--text', {'visually-hidden': currentPage === PAGES_START})} to={{pathname: AppRoute.Catalog, search: `?${Query.PageNumber}=${currentPage - 1}`}} onClick={handleScrollToTop}>{BACK}</Link>
+          <li className="pagination__item">
+            <Link className={classNames('pagination__link', 'pagination__link--text', {'visually-hidden': currentPage === PAGES_START})} to={{pathname: AppRoute.Catalog, search: `${generateQueryParams(currentPage - 1)}`}}
+              onClick={() => {
+                handleScrollToTop();
+              }}
+            >{BACK}
+            </Link>
           </li>
-          {Array.from({length: PAGES_NUMBER}, (index, item) => item + 1)
-            .map((item) => (
-              <li className="pagination__item" key={item}>
-                <Link className={classNames('pagination__link', {'pagination__link--active': currentPage === item})} to={{pathname: AppRoute.Catalog, search: `?${Query.PageNumber}=${item}`}} onClick={handleScrollToTop}>{item}
-                </Link>
-              </li>
-            ))}
-          <li className="pagination__item"><Link className={classNames('pagination__link', 'pagination__link--text', {'visually-hidden': currentPage === PAGES_NUMBER})} to={{pathname: AppRoute.Catalog, search: `?${Query.PageNumber}=${currentPage + 1}`}} onClick={handleScrollToTop}>{FORWARD}</Link>
+          {Array.from({length: pagesNumber}, (index, item) => item + 1)
+            .map((item) => {
+              const query = generateQueryParams(item);
+              return (
+                <li className="pagination__item" key={item}>
+                  <Link className={classNames('pagination__link', {'pagination__link--active': currentPage === item})} to={{pathname: AppRoute.Catalog, search: `${query}`}}
+                    onClick={handleScrollToTop}
+                  >{item}
+                  </Link>
+                </li>
+              );
+            }
+            )}
+          <li className="pagination__item">
+            <Link className={classNames('pagination__link', 'pagination__link--text', {'visually-hidden': currentPage === pagesNumber})} to={{pathname: AppRoute.Catalog, search: `${generateQueryParams(currentPage + 1)}`}}
+              onClick={handleScrollToTop}
+            >{FORWARD}
+            </Link>
           </li>
         </ul>
-      </div>
-    </div>
+      </div>}
 
+    </div>
   );
 }
 

@@ -5,7 +5,7 @@ import { configureMockStore } from '@jedmao/redux-mock-store';
 import HistoryRouter from '../history-router/history-router';
 import App from './app';
 import { makeFakeCameras, makeFakePromo, makeFakeReviews } from '../../utils/mocks';
-import { AppRoute, ResponseStatus, Query } from '../../const';
+import { AppRoute, ResponseStatus, Query, CAMERAS_PER_PAGE } from '../../const';
 import thunk from 'redux-thunk';
 import { generatePath } from 'react-router-dom';
 
@@ -17,8 +17,10 @@ const fakeReviews = makeFakeReviews();
 const store = mockStore({
   CAMERAS: {
     cameras: fakeCameras,
+    pagesNumber: Math.ceil(fakeCameras.length / CAMERAS_PER_PAGE),
     isDataLoading: false,
     loadingStatus: ResponseStatus.Fulfilled,
+    searchedCameras: [],
   },
   PROMO: {
     promoCamera: fakePromo,

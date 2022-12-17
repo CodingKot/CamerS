@@ -1,4 +1,25 @@
-function CatalogAside () : JSX.Element {
+import { ChangeEvent} from 'react';
+import { CATEGORY_BUTTONS, Query, TYPE_BUTTONS, Category, Type, LEVEL_BUTTONS } from '../../../const';
+import { FilterParams } from '../../../types/filter-params';
+
+type CatalogAsideProps = {
+  checkMinPrice: () => Promise<void>;
+  checkMaxPrice: () => Promise<void>;
+  handleMaxPriceChange: (evt: ChangeEvent<HTMLInputElement>) => void;
+  handleMinPriceChange: (evt: ChangeEvent<HTMLInputElement>) => void;
+  minPricePlaceholder: string;
+  maxPricePlaceholder: string;
+  handleFilterParamsChange: (value: string, queries: string[], name: Query) => void;
+  filterParams: FilterParams;
+  minPrice: string | null;
+  maxPrice: string | null;
+  resetFilterParams: () => void;
+}
+
+
+function CatalogAside ({checkMinPrice, checkMaxPrice, handleMaxPriceChange, handleMinPriceChange, minPricePlaceholder, maxPricePlaceholder, handleFilterParamsChange, filterParams, minPrice, maxPrice, resetFilterParams}: CatalogAsideProps) : JSX.Element {
+
+
   return (
     <div className="catalog__aside" data-testid="aside">
       <div className="catalog-filter">
@@ -9,71 +30,77 @@ function CatalogAside () : JSX.Element {
             <div className="catalog-filter__price-range">
               <div className="custom-input">
                 <label>
-                  <input type="number" name="price" placeholder="от"/>
+                  <input type="number" name="price" placeholder={minPricePlaceholder}
+                    onBlur={() => {
+                      checkMinPrice();
+                    }}
+                    value={minPrice ?? ''}
+                    onChange={handleMinPriceChange}
+                  />
                 </label>
               </div>
               <div className="custom-input">
                 <label>
-                  <input type="number" name="priceUp" placeholder="до"/>
+                  <input type="number" name="priceUp" placeholder={maxPricePlaceholder}
+                    onBlur={() => {
+                      checkMaxPrice();
+                    }}
+                    value={maxPrice ?? ''}
+                    onChange={handleMaxPriceChange}
+                  />
                 </label>
               </div>
             </div>
           </fieldset>
           <fieldset className="catalog-filter__block">
             <legend className="title title--h5">Категория</legend>
-            <div className="custom-checkbox catalog-filter__item">
-              <label>
-                <input type="checkbox" name="photocamera"/><span className="custom-checkbox__icon"></span><span className="custom-checkbox__label">Фотокамера</span>
-              </label>
-            </div>
-            <div className="custom-checkbox catalog-filter__item">
-              <label>
-                <input type="checkbox" name="videocamera"/><span className="custom-checkbox__icon"></span><span className="custom-checkbox__label">Видеокамера</span>
-              </label>
-            </div>
+            {CATEGORY_BUTTONS.map((button) => (
+              <div className="custom-checkbox catalog-filter__item" key={button.value}>
+                <label>
+                  <input type="checkbox" name={button.value}
+                    checked={filterParams.category.includes(button.label)}
+                    onChange={() => {
+                      handleFilterParamsChange(button.label, filterParams.category, Query.Category);
+                    }}
+                  /><span className="custom-checkbox__icon"></span><span className="custom-checkbox__label">{button.label}</span>
+                </label>
+              </div>
+            ))}
           </fieldset>
           <fieldset className="catalog-filter__block">
             <legend className="title title--h5">Тип камеры</legend>
-            <div className="custom-checkbox catalog-filter__item">
-              <label>
-                <input type="checkbox" name="digital"/><span className="custom-checkbox__icon"></span><span className="custom-checkbox__label">Цифровая</span>
-              </label>
-            </div>
-            <div className="custom-checkbox catalog-filter__item">
-              <label>
-                <input type="checkbox" name="film"/><span className="custom-checkbox__icon"></span><span className="custom-checkbox__label">Плёночная</span>
-              </label>
-            </div>
-            <div className="custom-checkbox catalog-filter__item">
-              <label>
-                <input type="checkbox" name="snapshot"/><span className="custom-checkbox__icon"></span><span className="custom-checkbox__label">Моментальная</span>
-              </label>
-            </div>
-            <div className="custom-checkbox catalog-filter__item">
-              <label>
-                <input type="checkbox" name="collection"/><span className="custom-checkbox__icon"></span><span className="custom-checkbox__label">Коллекционная</span>
-              </label>
-            </div>
+            {TYPE_BUTTONS.map((button) => (
+              <div className="custom-checkbox catalog-filter__item" key={button.value}>
+                <label>
+                  <input type="checkbox" name={button.value}
+                    checked={filterParams.type.includes(button.label)}
+                    disabled={(button.label === Type.Snapshot || button.label === Type.Film) && filterParams.category.includes(Category.Videocamera) && !filterParams.category.includes(Category.Photocamera)}
+                    onChange={() => {
+                      handleFilterParamsChange(button.label, filterParams.type, Query.Type);
+                    }}
+                  /><span className="custom-checkbox__icon"></span><span className="custom-checkbox__label">{button.label}</span>
+                </label>
+              </div>
+            ))}
           </fieldset>
           <fieldset className="catalog-filter__block">
             <legend className="title title--h5">Уровень</legend>
-            <div className="custom-checkbox catalog-filter__item">
-              <label>
-                <input type="checkbox" name="zero" /><span className="custom-checkbox__icon"></span><span className="custom-checkbox__label">Нулевой</span>
-              </label>
-            </div>
-            <div className="custom-checkbox catalog-filter__item">
-              <label>
-                <input type="checkbox" name="non-professional"/><span className="custom-checkbox__icon"></span><span className="custom-checkbox__label">Любительский</span>
-              </label>
-            </div>
-            <div className="custom-checkbox catalog-filter__item">
-              <label>
-                <input type="checkbox" name="professional"/><span className="custom-checkbox__icon"></span><span className="custom-checkbox__label">Профессиональный</span>
-              </label>
-            </div>
+            {LEVEL_BUTTONS.map((button) => (
+              <div className="custom-checkbox catalog-filter__item" key={button.value}>
+                <label>
+                  <input type="checkbox" name={button.value}
+                    checked={filterParams.level.includes(button.label)}
+                    onChange={() => {
+                      handleFilterParamsChange(button.label, filterParams.level, Query.Level);
+                    }}
+                  /><span className="custom-checkbox__icon"></span><span className="custom-checkbox__label">{button.label}</span>
+                </label>
+              </div>
+            ))}
           </fieldset>
-          <button className="btn catalog-filter__reset-btn" type="reset">Сбросить фильтры
+          <button className="btn catalog-filter__reset-btn" type="reset"
+            onClick={resetFilterParams}
+          >Сбросить фильтры
           </button>
         </form>
       </div>

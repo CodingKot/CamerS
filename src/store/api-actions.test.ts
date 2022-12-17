@@ -3,8 +3,8 @@ import thunk, {ThunkDispatch} from 'redux-thunk';
 import MockAdapter from 'axios-mock-adapter';
 import { configureMockStore } from '@jedmao/redux-mock-store';
 import { createAPI } from '../services/api';
-import { fetchCameras, fetchReviews, fetchSimilars, fetchPromo, fetchSelectedProduct, postReview } from './api-actions';
-import { ApiRoute, CAMERAS_PER_PAGE } from '../const';
+import { fetchCameras, fetchReviews, fetchSimilars, fetchPromo, fetchSelectedProduct, postReview, fetchSearchedCameras, fetchMinPrice, fetchMaxPrice } from './api-actions';
+import { ApiRoute, GetParameter, SortParameter, OrderParameter} from '../const';
 import { State } from '../types/state';
 import { makeFakeCameras, makeFakeReviews, makeFakePromo, makeFakeCamera, makeFakePostReview } from '../utils/mocks';
 import { redirectToRoute } from './action';
@@ -41,17 +41,36 @@ describe('Async actions', () => {
     ]);
   });
 
-  it('should dispatch Load_Сameras when GET /cameras', async () => {
+  it('should dispatch Load_Сameras when GET /cameras/?query_params', async () => {
     const fakeCameras = makeFakeCameras();
-    const startIndex = 0;
+
+    const queryParams = {
+      sortType: 'price',
+      order: 'asc',
+      minPrice: '1000',
+      maxPrice: '100000',
+      category: ['Видеокамера'],
+      type: ['Цифровая'],
+      level: ['Нулевой'],
+    };
+
+    const params = {
+      [GetParameter.Sort]: queryParams.sortType,
+      [GetParameter.Order]: queryParams.order,
+      [GetParameter.PriceMin]: queryParams.minPrice,
+      [GetParameter.PriceMax]: queryParams.maxPrice,
+      [GetParameter.Category]: queryParams.category,
+      [GetParameter.Type]: queryParams.type,
+      [GetParameter.Level]: queryParams.level,
+    };
 
     mockApi
-      .onGet(`${ApiRoute.Cameras}?_start=${startIndex}&_end=${startIndex + CAMERAS_PER_PAGE}`)
+      .onGet(ApiRoute.Cameras, params)
       .reply(200, fakeCameras);
 
     const store = mockStore();
 
-    await store.dispatch(fetchCameras(startIndex));
+    await store.dispatch(fetchCameras(queryParams));
 
     const actions = store.getActions().map(({type}) => type as string);
 
@@ -201,6 +220,87 @@ describe('Async actions', () => {
 
       postReview.pending.type,
       postReview.fulfilled.type,
+    ]);
+  });
+
+  it('should dispatch Load_Searched_Cameras when GET /cameras/?like', async () => {
+    const fakeCameras = makeFakeCameras();
+
+    const queryName = 'a';
+
+    const params = {
+      [GetParameter.Like]: queryName,
+    };
+
+    mockApi
+      .onGet(ApiRoute.Cameras, params)
+      .reply(200, fakeCameras);
+
+    const store = mockStore();
+
+    await store.dispatch(fetchSearchedCameras(queryName));
+
+    const actions = store.getActions().map(({type}) => type as string);
+
+    expect(actions).toEqual([
+
+      fetchSearchedCameras.pending.type,
+      fetchSearchedCameras.fulfilled.type,
+    ]);
+  });
+
+  it('should dispatch Load_minPrice when GET /cameras/?price_gte', async () => {
+    const fakePrice = '1990';
+
+    const queryPrice = 2000;
+
+    const params = {
+      [GetParameter.PriceMin]: queryPrice,
+      [GetParameter.Sort]: SortParameter.Price,
+      [GetParameter.Order]: OrderParameter.Up,
+    };
+
+    mockApi
+      .onGet(ApiRoute.Cameras, params)
+      .reply(200, fakePrice);
+
+    const store = mockStore();
+
+    await store.dispatch(fetchMinPrice(queryPrice));
+
+    const actions = store.getActions().map(({type}) => type as string);
+
+    expect(actions).toEqual([
+
+      fetchMinPrice.pending.type,
+      fetchMinPrice.fulfilled.type,
+    ]);
+  });
+  it('should dispatch Load_maxPrice when GET /cameras/?price_lte', async () => {
+    const fakePrice = '199000';
+
+    const queryPrice = 180000;
+
+    const params = {
+      [GetParameter.PriceMin]: queryPrice,
+      [GetParameter.Sort]: SortParameter.Price,
+      [GetParameter.Order]: OrderParameter.Up,
+    };
+
+    mockApi
+      .onGet(ApiRoute.Cameras, params)
+      .reply(200, fakePrice);
+
+    const store = mockStore();
+
+    await store.dispatch(fetchMaxPrice(queryPrice));
+
+    const actions = store.getActions().map(({type}) => type as string);
+
+    expect(actions).toEqual([
+
+      fetchMaxPrice.pending.type,
+      fetchMaxPrice.fulfilled.type,
     ]);
   });
 

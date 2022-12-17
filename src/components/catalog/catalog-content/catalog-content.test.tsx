@@ -24,7 +24,17 @@ describe('Component: CatalogContent', () => {
       })}
       >
         <HistoryRouter history={history}>
-          <CatalogContent/>
+          <CatalogContent
+            cameras={fakeCameras}
+            sortingType='price'
+            orderType='asc'
+            isDataLoading={false}
+            currentPage={1}
+            handleOrderSearchParams={jest.fn()}
+            handleSortingSearchParams={jest.fn()}
+            generateQueryParams={jest.fn()}
+
+          />
         </HistoryRouter>
       </Provider>
     );

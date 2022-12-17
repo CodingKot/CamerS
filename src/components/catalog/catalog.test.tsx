@@ -6,7 +6,7 @@ import { Provider } from 'react-redux';
 import { configureMockStore } from '@jedmao/redux-mock-store';
 import thunk from 'redux-thunk';
 import {makeFakeCameras, makeFakePromo} from '../../utils/mocks';
-import {ResponseStatus} from '../../const';
+import {CAMERAS_PER_PAGE, ResponseStatus} from '../../const';
 
 describe('Component: Home', () => {
   it('should render correctly', () => {
@@ -19,8 +19,10 @@ describe('Component: Home', () => {
       <Provider store = {mockStore({
         CAMERAS: {
           cameras: fakeCameras,
+          pagesNumber: Math.ceil(fakeCameras.length / CAMERAS_PER_PAGE),
           isDataLoading: false,
           loadingStatus: ResponseStatus.Fulfilled,
+          searchedCameras: [],
         },
         PROMO: {
           promoCamera: fakePromo,

@@ -7,6 +7,7 @@ export enum CouponType {
 export enum AppRoute {
   Home = '/',
   Catalog = '/catalog',
+  CatalogEmpty = '/catalog/empty',
   Product = '/catalog/:id',
   NotFound = '/404',
 }
@@ -70,9 +71,76 @@ enum SupportNavItem {
 export enum Query {
   PageNumber = 'page',
   Tab = 'tab',
+  SelectedSortingType = 'sort',
+  SelectedOrderType = 'order',
+  PriceMin = 'price_gte',
+  PriceMax = 'price_lte',
+  Category = 'category',
+  Type = 'type',
+  Level = 'level',
+}
+
+export enum GetParameter {
+  Like = 'name_like',
+  Sort = '_sort',
+  Order = '_order',
+  PriceMin = 'price_gte',
+  PriceMax = 'price_lte',
+  Category = 'category',
+  Type = 'type',
+  Level = 'level',
+}
+
+export enum SortParameter {
+  Price = 'price',
+  Rating = 'rating',
+}
+
+enum SortButton {
+  Price = 'sortPrice',
+  Rating = 'sortPopular',
+}
+
+
+export enum OrderParameter {
+  Up = 'asc',
+  Down = 'desc',
+}
+
+enum OrderButton {
+  Up = 'up',
+  Down = 'down',
 }
 
 export const STARS_COUNT = 5;
+
+export const FILTER_QUERIES = [
+  Query.PriceMax,
+  Query.PriceMin,
+  Query.Category,
+  Query.Type,
+  Query.Level,
+];
+
+export const SORTING_BUTTONS = [
+  {value: SortButton.Price, label: 'по цене', sortParameter: SortParameter.Price},
+  {value: SortButton.Rating, label: 'по популярности', sortParameter: SortParameter.Rating},
+];
+
+export const ORDER_BUTTONS = [
+  {
+    value: OrderButton.Up,
+    label: 'По возрастанию',
+    className: 'catalog-sort__btn--up',
+    orderParameter: OrderParameter.Up
+  },
+  {
+    value: OrderButton.Down,
+    label: 'По убыванию',
+    className: 'catalog-sort__btn--down',
+    orderParameter: OrderParameter.Down
+  },
+];
 
 export const TAB_CONTROLS = [
   {value: TabControl.Features, label: 'Характеристики'},
@@ -107,9 +175,37 @@ export const NAVIGATION_ITEMS = [
   },
 ];
 
-export const PAGES_START = 1;
+export enum Category {
+  Photocamera = 'Фотоаппарат',
+  Videocamera = 'Видеокамера',
+}
 
-export const PAGES_NUMBER = 5;
+export const CATEGORY_BUTTONS = [
+  {value: 'photocamera', label: 'Фотоаппарат'},
+  {value: 'videocamera', label: 'Видеокамера'}
+];
+
+export enum Type {
+  Digital = 'Цифровая',
+  Film = 'Плёночная',
+  Snapshot = 'Моментальная',
+  Collection = 'Коллекционная',
+}
+
+export const TYPE_BUTTONS = [
+  {value: 'digital', label: 'Цифровая'},
+  {value: 'film', label: 'Плёночная'},
+  {value: 'snapshot', label: 'Моментальная'},
+  {value: 'collection', label: 'Коллекционная'}
+];
+
+export const LEVEL_BUTTONS = [
+  {value: 'zero', label: 'Нулевой'},
+  {value: 'non-professional', label: 'Любительский'},
+  {value: 'professional', label: 'Профессиональный'},
+];
+
+export const PAGES_START = 1;
 
 export const CAMERAS_PER_PAGE = 9;
 

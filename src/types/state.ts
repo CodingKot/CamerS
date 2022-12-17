@@ -6,8 +6,11 @@ import { Reviews } from './review';
 
 export type CamerasProcess = {
   cameras: Cameras;
+  searchedCameras: Cameras;
   isDataLoading: boolean;
   loadingStatus: ResponseStatus;
+  pagesNumber: number;
+
 }
 
 export type PromoProcess = {

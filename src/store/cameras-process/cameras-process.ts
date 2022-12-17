@@ -1,14 +1,17 @@
 import {createSlice} from '@reduxjs/toolkit';
-import { NameSpase, ResponseStatus } from '../../const';
+import { CAMERAS_PER_PAGE, NameSpase, ResponseStatus } from '../../const';
 import { CamerasProcess } from '../../types/state';
-import { fetchCameras, fetchSelectedProduct } from '../api-actions';
+import { fetchCameras, fetchSelectedProduct, fetchSearchedCameras} from '../api-actions';
 import { updateItem } from '../../utils/utils';
+import { resetSearchedCameras } from '../action';
 
 
 const initialState: CamerasProcess = {
   cameras: [],
+  searchedCameras: [],
   isDataLoading: false,
   loadingStatus: ResponseStatus.Initial,
+  pagesNumber: 0,
 };
 
 export const camerasProcess = createSlice({
@@ -22,12 +25,19 @@ export const camerasProcess = createSlice({
       })
       .addCase(fetchCameras.fulfilled, (state, action) => {
         state.cameras = action.payload;
+        state.pagesNumber = Math.ceil(action.payload.length / CAMERAS_PER_PAGE);
         state.isDataLoading = false;
         state.loadingStatus = ResponseStatus.Fulfilled;
       })
       .addCase(fetchCameras.rejected, (state) => {
         state.isDataLoading = false;
         state.loadingStatus = ResponseStatus.Rejected;
+      })
+      .addCase(fetchSearchedCameras.fulfilled, (state, action) => {
+        state.searchedCameras = action.payload;
+      })
+      .addCase(resetSearchedCameras, (state) => {
+        state.searchedCameras = [];
       })
       .addCase(fetchSelectedProduct.pending, (state) => {
         state.isDataLoading = true;
